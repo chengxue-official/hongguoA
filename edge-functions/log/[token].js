@@ -5,20 +5,27 @@
  *   GET /log/<token>      在线查看页（手机直接看，带一键复制/下载按钮）
  *   GET /log/<token>.txt  纯文本下载（Content-Disposition: attachment）
  *
- * KV 访问方式与限流口径同 edge-functions/api/log.js（全局绑定变量 LOGS，
- * key 前缀 log_，无 TTL 永久保留）。params.token 形如 "ab12cd34ef" 或 "ab12cd34ef.txt"。
+ * 存储用 Blob（getStore 即用即得，无需开通/审核，详见 edge-functions/api/log.js）。
+ * key 前缀 log_，无 TTL 永久保留；查看页用**强一致读**——用户往往是刚上传完
+ * 就立刻点链接，最终一致（秒级~60s）会出现「日志不存在」的假象。
+ * params.token 形如 "ab12cd34ef" 或 "ab12cd34ef.txt"。
  */
+
+import { getStore } from '@edgeone/pages-blob';
 
 const LOG_PREFIX = 'log_';
 const TOKEN_RE = /^[a-z0-9]{10}$/;
 
-/** 取 KV 绑定：EdgeOne 注入为全局变量名；兼容 env.LOGS 写法。 */
-function kv(env) {
+/** Blob 命名空间名，必须与 api/log.js 保持一致。 */
+const BLOB_STORE = 'hougtime';
+
+/** 取 Blob 命名空间实例。 */
+function blobStore() {
   try {
-    if (typeof LOGS !== 'undefined' && LOGS) return LOGS;
-  } catch (e) { /* 全局不存在时忽略 */ }
-  if (env && env.LOGS) return env.LOGS;
-  return null;
+    return getStore(BLOB_STORE);
+  } catch (e) {
+    return null;
+  }
 }
 
 function esc(s) {
@@ -34,9 +41,9 @@ function byteLen(s) {
   return new TextEncoder().encode(s).length;
 }
 
-/** 读取 KV 记录；不存在返回 null。 */
+/** 读取 Blob 记录；不存在返回 null。强一致读，保证刚上传的日志立刻可见。 */
 async function readRecord(store, token) {
-  const raw = await store.get(LOG_PREFIX + token);
+  const raw = await store.get(LOG_PREFIX + token, { consistency: 'strong' });
   if (!raw) return null;
   try {
     return JSON.parse(raw);
@@ -183,7 +190,7 @@ async function handleView(store, token) {
   });
 }
 
-export async function onRequestGet({ params, env }) {
+export async function onRequestGet({ params }) {
   const raw = String(params.token || '');
   const dot = raw.lastIndexOf('.');
   const token = (dot > 0 ? raw.slice(0, dot) : raw).toLowerCase();
@@ -193,9 +200,9 @@ export async function onRequestGet({ params, env }) {
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },
     });
   }
-  const store = kv(env);
+  const store = blobStore();
   if (!store) {
-    return new Response('KV 未绑定（控制台绑定命名空间，变量名 LOGS）', {
+    return new Response('存储不可用：Blob getStore 初始化失败', {
       status: 500,
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },
     });
