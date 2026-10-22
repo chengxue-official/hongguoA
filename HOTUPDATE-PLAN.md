@@ -5,7 +5,7 @@
 > 即域名活着、后端死了。**窗口期内所有已装客户端的更新检查都是失败的**（静默失败，不弹窗）。
 
 **当前进度（2026-10-22）**
-- 服务端：`functions/api/log.js`、`functions/log/[token].js` 已按 EdgeOne 规范写好（KV key 字符集、无 TTL 等差异已处理）。
+- 服务端：`edge-functions/api/log.js`、`edge-functions/log/[token].js` 已按 EdgeOne 规范写好（KV key 字符集、无 TTL、body 1MB 上限等差异已处理）。
 - 客户端：v1.0.18 (118) 已构建——多源 + 清单自举 + `mirrors`/`logApi`/`sha256` 全部落地，编译/单测/lint 全绿。
 - 产物：`public/hongguo-1.0.18.apk`（10.92 MB，sha256 `6e5b9657…ac3979`）、`public/update.json`（v2）。
 - 发版：`release.ps1` 一条命令完成构建→拷包→sha256→清单→推送。
@@ -36,7 +36,7 @@
 | 国内 OSS/COS + CDN | 好 | 需实名+备案域名+少量费用 | 需另配函数 | 最稳但要花钱，EdgeOne 失败后再考虑 |
 
 EdgeOne 已实测确认的接口形态（与 CF 的差异）：
-- 函数路由：`/functions/api/log.js` → `/api/log`；动态路由 `functions/log/[token].js` → `/log/<token>`（`params.token`）。
+- 函数路由：**`/edge-functions/api/log.js` → `/api/log`**（目录名必须是 edge-functions，踩坑：写成 functions 会导致函数不生效）；动态路由 `edge-functions/log/[token].js` → `/log/<token>`（`params.token`）。
 - KV 通过**绑定变量名全局访问**（如 `LOGS.get/put/delete/list`），不是 CF 的 `env.LOGS`（代码里两者兼容写法）。
 - **KV key 只允许字母/数字/下划线** → 前缀用 `log_` / `rate_`，不能用冒号。
 - **KV put 无 TTL 参数** → 旧「未读 24h 自动清理 / 读后续 30 天」策略退化为**永久保留**（1GB 容量 ≈ 300+ 条 3MB 日志，量级足够；限流改用「存时间戳 + 计算剩余」实现，效果等价）。
@@ -101,8 +101,8 @@ KataBump 只是免费二级域名商，**它没被封**——之前是你把 NS 
 
 ```
 （本目录，已推送为 GitHub 仓库 chengxue-official/hongguoA）
-├── functions/
-│   ├── api/log.js        POST /api/log     上传日志（限流 15 分钟/设备）
+├── edge-functions/          # ⚠ 目录名必须是 edge-functions（不是 functions）
+│   ├── api/log.js        POST /api/log     上传日志（限流 15 分钟/设备，body ≤900KB）
 │   └── log/[token].js    GET /log/<token>  在线查看；/log/<token>.txt 下载
 ├── public/               update.json + APK（静态，直接由 Pages 分发）
 └── legacy/               旧 CF Worker（已死，保留仅作历史参考）
@@ -111,9 +111,10 @@ KataBump 只是免费二级域名商，**它没被封**——之前是你把 NS 
 控制台步骤（一次性）：
 1. 注册 EdgeOne（国内站需实名；国际版 pages.edgeone.ai 免实名，二选一）；
 2. Pages → 创建项目 → 关联 GitHub 仓库 `chengxue-official/hongguoA`（Git 集成，push 即部署）；
-3. Pages → KV 存储 → 开通账户 → 创建命名空间（如 `hongguo-logs`）→ 绑定到项目，**变量名填 `LOGS`**（代码按此名访问）；
-4. 测试 `https://<默认域名>/update.json`、`/api/log`、电视端国内可达性；
-5. （路径 A）自定义域名绑定 `hongguo.kdns.fr`，KataBump 改 NS。
+3. **项目设置 → 构建部署配置：构建命令留空（纯静态），输出目录填 `public`**。填错的话 `/` 和 `/update.json` 都会 404，页面上只显示「页面不存在」；
+4. Pages → KV 存储 → 开通账户 → 创建命名空间（如 `hongguo-logs`）→ 绑定到项目，**变量名填 `LOGS`**（代码按此名访问）；
+5. 测试 `https://<默认域名>/update.json`、`/api/log`、电视端国内可达性；
+6. （路径 A）自定义域名绑定 `hongguo.kdns.fr`，KataBump 改 NS。
 
 ---
 

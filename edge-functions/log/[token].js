@@ -1,11 +1,11 @@
 /**
  * HougTime 日志查看/下载（EdgeOne Pages Functions 版）
  * ------------------------------------------------------------------
- * 路由：functions/log/[token].js
+ * 路由：edge-functions/log/[token].js
  *   GET /log/<token>      在线查看页（手机直接看，带一键复制/下载按钮）
  *   GET /log/<token>.txt  纯文本下载（Content-Disposition: attachment）
  *
- * KV 访问方式与限流口径同 functions/api/log.js（全局绑定变量 LOGS，
+ * KV 访问方式与限流口径同 edge-functions/api/log.js（全局绑定变量 LOGS，
  * key 前缀 log_，无 TTL 永久保留）。params.token 形如 "ab12cd34ef" 或 "ab12cd34ef.txt"。
  */
 

@@ -1,7 +1,7 @@
 /**
  * HougTime 日志上传 API（EdgeOne Pages Functions 版，替代被封的 CF Worker）
  * ------------------------------------------------------------------
- * 路由：functions/api/log.js -> POST /api/log
+ * 路由：edge-functions/api/log.js -> POST /api/log
  *
  * 协议与旧 CF Worker 完全一致（客户端无感）：
  *   POST /api/log   上传日志文本 -> 存 KV，返回一次性 token 与「在线查看/下载 .txt」链接
@@ -11,7 +11,8 @@
  *   代码里做了兼容：优先全局 LOGS，回退 env.LOGS。
  * - key 只允许字母/数字/下划线 -> 前缀用 log_ / rate_（不能用冒号）。
  * - put 无 TTL 参数 -> 「未读 24h 清理」策略取消，记录永久保留（KV 账户 1GB 上限，
- *   单条日志上限 3MB，量级足够）；限流改为「存时间戳 + 计算剩余」实现。
+ *   量级足够）；限流改为「存时间戳 + 计算剩余」实现。
+ * - 请求 body 上限 1 MB（平台硬限制）-> 单次上传上限设 900 KB，客户端同步截断。
  * - KV 最终一致性（60s 全球同步）-> 限流是软限制，客户端本地还有 15 分钟节流兜底。
  */
 
@@ -21,7 +22,7 @@ const RATE_PREFIX = 'rate_';
 /** 同一设备的上传间隔：15 分钟 */
 const RATE_WINDOW_SECONDS = 15 * 60;
 
-const MAX_BYTES = 3 * 1024 * 1024; // 单次上传上限 3 MB
+const MAX_BYTES = 900 * 1024; // 单次上传上限 900 KB（EdgeOne 请求 body 上限 1 MB）
 const TOKEN_RE = /^[a-z0-9]{10}$/;
 
 /** 取 KV 绑定：EdgeOne 注入为全局变量名；兼容 env.LOGS 写法。 */
