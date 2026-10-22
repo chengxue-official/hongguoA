@@ -14,7 +14,9 @@
  * - 单值上限 25 MB（远大于这里 900 KB 的上传上限）；账户免费额度 1 GB。
  * - 默认「最终一致」（写入后短暂时间才在所有节点读到），限流与查看页这类
  *   「刚写完就要读」的场景显式传 `{ consistency: 'strong' }` 走强一致读。
- * - key 无字符集限制（KV 只允许字母/数字/下划线），这里仍沿用 log_ / rate_ 前缀。
+ * - key 无字符集限制（KV 只允许字母/数字/下划线），这里仍沿用 log_ / rate_ 前缀；
+ *   另外每次上传会写一个 `idx_<yyyymmdd>_<token>` 日期索引，供定时清理函数按 key 名回收
+ *   （Blob 无 TTL，且 list 不返回写入时间，只能靠 key 名携带日期）。
  * - 请求 body 上限 1 MB（平台硬限制）-> 单次上传上限设 900 KB，客户端同步截断。
  */
 
@@ -22,6 +24,7 @@ import { getStore } from '@edgeone/pages-blob';
 
 const LOG_PREFIX = 'log_';
 const RATE_PREFIX = 'rate_';
+const IDX_PREFIX = 'idx_';
 
 /** Blob 命名空间名；首次调用 getStore 时平台自动创建。 */
 const BLOB_STORE = 'hougtime';
@@ -70,6 +73,12 @@ function byteLen(s) {
 
 function nowSeconds() {
   return Math.floor(Date.now() / 1000);
+}
+
+/** 当天日期 yyyymmdd（东八区，日志时间本来就是国内用户口径）。 */
+function dayKey() {
+  const d = new Date(Date.now() + 8 * 3600 * 1000);
+  return d.toISOString().slice(0, 10).replace(/-/g, '');
 }
 
 /** 剩余限流秒数；0 表示可以上传。（Blob 无 TTL：存上次上传时间戳，自己算剩余） */
@@ -147,6 +156,15 @@ async function handleUpload(request) {
     await store.set(LOG_PREFIX + token, JSON.stringify(record));
   } catch (e) {
     return json({ code: 500, msg: '存储失败：' + (e && e.message ? e.message : e) }, 500);
+  }
+
+  // 日期索引：Blob 的 list 只返回 key/etag（无时间元数据），无法按写入时间筛选，
+  // 所以额外写一个 key 里带日期的空索引，让清理函数可以「只看 key 名」批量回收。
+  // 索引写失败不影响上传主流程（日志已落库），最坏是该条晚一天被兜底扫描清掉。
+  try {
+    await store.set(IDX_PREFIX + dayKey() + '_' + token, '1');
+  } catch (e) {
+    // 忽略
   }
 
   if (deviceKey) await rateTouch(store, deviceKey);
