@@ -9,7 +9,8 @@
 
 ```
 ├── edge-functions/         # EdgeOne Pages Functions（动态 API，必须叫这个目录名）
-│   ├── api/log.js          # POST /api/log        日志上传（限流 15 分钟/设备）
+│   ├── api/log.js          # POST /api/log        日志上传（限流 15 分钟/设备，写日期索引）
+│   ├── api/cron/cleanup.js # POST /api/cron/cleanup  每日清理 30 天前的日志（schedules 触发）
 │   └── log/[token].js      # GET  /log/<token>    在线查看；/log/<token>.txt 下载
 ├── public/                 # 静态资源（对外可直接访问）
 │   ├── update.json         # 版本清单（v2：含 sha256 / mirrors / logApi）
@@ -68,6 +69,7 @@ EdgeOne Pages 关联本仓库后（Git 集成），`git push` 自动构建部署
 1. Pages → 创建项目 → 关联本仓库（`chengxue-official/hongguoA`）；
 2. 输出目录无需手动配置——仓库根的 `edgeone.json` 已锁定 `"outputDirectory": "public"`（踩坑：EdgeOne 默认输出目录是仓库根 `/`，不锁定的话 `/` 和 `/update.json` 全 404「页面不存在」）；
 3. **无需配置任何存储**：日志走 Blob（`@edgeone/pages-blob`），`getStore('hougtime')` 首次调用自动建命名空间，免开通免审核（KV 需人工审核，故不用）；
-4. 测试 `https://<默认域名>/update.json`、`/api/log` 与电视端国内可达性；
-5. 绑定自定义域名：添加 `www.hongguo.kdns.fr` → TXT 归属验证（同父域子域继承）→ 按弹窗加 CNAME（目标形如 `www.hongguo.kdns.fr.pages.dnsoe6.com`，每个域名独立生成）→ 平台懒激活并签发免费证书。
+4. **无需配置定时任务**：`edgeone.json` 的 `schedules` 已声明每天 04:30 触发 `/api/cron/cleanup` 清理 30 天前的日志（平台部署时自动注册，新部署中移除的任务会自动停止）；
+5. 测试 `https://<默认域名>/update.json`、`/api/log` 与电视端国内可达性；
+6. 绑定自定义域名：添加 `www.hongguo.kdns.fr` → TXT 归属验证（同父域子域继承）→ 按弹窗加 CNAME（目标形如 `www.hongguo.kdns.fr.pages.dnsoe6.com`，每个域名独立生成）→ 平台懒激活并签发免费证书。
    注意：**根域 `hongguo.kdns.fr` 不能放 CNAME**（apex 与 SOA/NS 冲突），只能用 `www` 子域；平台默认域名（`*.edgeone.site`）国内不可匿名访问，必须走自定义域名。

@@ -41,7 +41,7 @@ EdgeOne 已实测确认的接口形态（与 CF 的差异）：
 - **存储选型：Blob 而非 KV**。KV 要走「控制台申请开通 → 人工审核 → 建命名空间 → 绑定项目」，审核周期长（社区有人 20+ 天仍在审批）；Blob 是 `getStore('name')` 即用即得，首次调用平台自动创建命名空间，**无需开通/审核/绑定**。
 - Blob SDK：`@edgeone/pages-blob`（当前 `0.0.18`），API `getStore / set / get / delete / list`；单值上限 25 MB，免费额度 1 GB；`get` 不存在返回 `null`；key 无字符集限制（本仓库仍沿用 `log_` / `rate_` 前缀）。
 - Blob 默认最终一致，可传 `{ consistency: 'strong' }` 走强一致读——**限流判定与查看页必须用强一致**，否则「刚传完立刻点链接」会读到旧值/空值。
-- Blob 无 TTL → 旧「未读 24h 自动清理 / 读后续 30 天」策略退化为**永久保留**（1 GB ≈ 300+ 条 3 MB 日志，量级足够；限流改用「存时间戳 + 计算剩余」实现，效果等价）。
+- Blob 无 TTL → 旧「未读 24h 自动清理 / 读后续 30 天」策略改由**定时清理函数**实现：`edgeone.json` 的 `schedules`（cron `30 4 * * *`，Asia/Shanghai）每天触发 `/api/cron/cleanup`，按 `idx_<yyyymmdd>_<token>` 日期索引回收 30 天前的日志与限流键（`list` 不返回写入时间，所以日期必须放进 key 名）。
 - 请求 body 上限 1 MB（平台硬限制）→ 函数侧单次上传上限 900 KB，客户端同步截断。
 - 部署：Git 集成（push 到 GitHub 自动构建，含 `npm install`）或 `edgeone pages deploy`；本地调试 `edgeone pages init / link / dev`。
 
@@ -106,7 +106,8 @@ EdgeOne 已实测确认的接口形态（与 CF 的差异）：
 ```
 （本目录，已推送为 GitHub 仓库 chengxue-official/hongguoA）
 ├── edge-functions/          # ⚠ 目录名必须是 edge-functions（不是 functions）
-│   ├── api/log.js        POST /api/log     上传日志（限流 15 分钟/设备，body ≤900KB）
+│   ├── api/log.js        POST /api/log     上传日志（限流 15 分钟/设备，body ≤900KB，写日期索引）
+│   ├── api/cron/cleanup.js POST /api/cron/cleanup  每日回收 30 天前日志（schedules 触发）
 │   └── log/[token].js    GET /log/<token>  在线查看；/log/<token>.txt 下载
 ├── public/               update.json + APK（静态，直接由 Pages 分发）
 └── legacy/               旧 CF Worker（已死，保留仅作历史参考）
@@ -144,7 +145,7 @@ cd d:\hongguo\hongguoTV-release
 | 新域名国内不可达 | 上线后先电视实测（`/update.json` 200）再发版；已验证 `www.hongguo.kdns.fr` 可用 |
 | 下载被劫持/损坏 | sha256 校验 + 多源逐个降级 |
 | 日志 API 挂 | 客户端自动降级飞书分片卡片（原有逻辑），日志不丢 |
-| Blob 无 TTL 日志堆积 | 1 GB 上限前用 `list` + `delete` 清；量大再加定期清理函数 |
+| Blob 无 TTL 日志堆积 | 已内置自动清理：上传时写 `idx_<yyyymmdd>_<token>` 日期索引，`edgeone.json` schedules 每天 04:30 触发 `/api/cron/cleanup` 回收 30 天前的日志与限流键（6 小时限频防刷） |
 
 ## 九、已完成事项
 
