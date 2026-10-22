@@ -111,7 +111,7 @@ KataBump 只是免费二级域名商，**它没被封**——之前是你把 NS 
 控制台步骤（一次性）：
 1. 注册 EdgeOne（国内站需实名；国际版 pages.edgeone.ai 免实名，二选一）；
 2. Pages → 创建项目 → 关联 GitHub 仓库 `chengxue-official/hongguoA`（Git 集成，push 即部署）；
-3. **项目设置 → 构建部署配置：构建命令留空（纯静态），输出目录填 `public`**。填错的话 `/` 和 `/update.json` 都会 404，页面上只显示「页面不存在」；
+3. 输出目录无需手动配置——仓库根 `edgeone.json` 已写死 `"outputDirectory": "public"`（踩坑：默认输出目录是仓库根 `/`，导致 `/` 与 `/update.json` 全 404；控制台若改过此项请与配置文件保持一致）；
 4. Pages → KV 存储 → 开通账户 → 创建命名空间（如 `hongguo-logs`）→ 绑定到项目，**变量名填 `LOGS`**（代码按此名访问）；
 5. 测试 `https://<默认域名>/update.json`、`/api/log`、电视端国内可达性；
 6. （路径 A）自定义域名绑定 `hongguo.kdns.fr`，KataBump 改 NS。

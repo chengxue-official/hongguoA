@@ -64,7 +64,7 @@ EdgeOne Pages 关联本仓库后（Git 集成），`git push` 自动构建部署
 ## EdgeOne 配置要点（控制台一次性）
 
 1. Pages → 创建项目 → 关联本仓库（`chengxue-official/hongguoA`）；
-2. **项目设置 → 构建部署配置：构建命令留空（纯静态），输出目录填 `public`**（不填 `/` 会 404「页面不存在」）；
+2. 输出目录无需手动配置——仓库根的 `edgeone.json` 已锁定 `"outputDirectory": "public"`（踩坑：EdgeOne 默认输出目录是仓库根 `/`，不锁定的话 `/` 和 `/update.json` 全 404「页面不存在」）；
 3. KV 存储 → 开通 → 创建命名空间（如 `hongguo-logs`）→ 绑定到项目，**环境变量名填 `LOGS`**（函数按此名访问）；
 4. 测试 `https://<默认域名>/update.json`、`/api/log` 与电视端国内可达性；
 5. 需要救回已装客户端时：绑定自定义域名 `hongguo.kdns.fr`，KataBump 把 NS 改指 EdgeOne。
