@@ -4,12 +4,13 @@
 > 实测：`hongguo.kdns.fr` DNS 解析仍正常（返回 CF 边缘 IP），但 `GET /update.json` 返回 **403**——
 > 即域名活着、后端死了。**窗口期内所有已装客户端的更新检查都是失败的**（静默失败，不弹窗）。
 
-**当前进度（2026-10-22）**
-- 服务端：`edge-functions/api/log.js`、`edge-functions/log/[token].js` 已按 EdgeOne 规范写好（KV key 字符集、无 TTL、body 1MB 上限等差异已处理）。
+**当前进度（2026-10-22，已上线）**
+- 服务端：`edge-functions/api/log.js`、`edge-functions/log/[token].js` 已按 EdgeOne 规范写好，**存储用 Blob 而非 KV**（KV 需人工审核，Blob 免开通即用，详见第二节）。
 - 客户端：v1.0.18 (118) 已构建——多源 + 清单自举 + `mirrors`/`logApi`/`sha256` 全部落地，编译/单测/lint 全绿。
-- 产物：`public/hongguo-1.0.18.apk`（10.92 MB，sha256 `6e5b9657…ac3979`）、`public/update.json`（v2）。
+- 产物：`public/hongguo-1.0.18.apk`（10.98 MB，sha256 `e6f079059a6b…b1f33`）、`public/update.json`（v2）。
 - 发版：`release.ps1` 一条命令完成构建→拷包→sha256→清单→推送。
-- **待你提供**：EdgeOne 项目域名（填进 `UpdateChecker.NEW_HOST` 与清单 `logApi`），以及域名走路径 A 还是 B（见第三节）。
+- 已上线：`https://www.hongguo.kdns.fr`（EdgeOne 自定义域名 + 免费证书），`/update.json` 200、APK 200、`POST /api/log` 200、`/log/<token>` 与 `.txt` 均 200、重复上传 429 限流生效。
+- **域名结论**：根域 `hongguo.kdns.fr` 无法指向 EdgeOne（KataBump 禁止 apex 放 CNAME），实际接入的是 `www` 子域，见第三节。
 
 ---
 
@@ -17,8 +18,8 @@
 
 | 层 | 旧方案 | 新方案 |
 |---|---|---|
-| 托管 | CF Worker + KV（免费、需科学对抗封锁风险） | **腾讯 EdgeOne Pages + Pages Functions + EdgeOne KV**（国内可达、免费额度、Pages 与 CF 用法近乎 1:1） |
-| 域名 | KataBump 免费二级域名 NS→CF | 同一域名 NS 改到 EdgeOne（救回，推荐）；救不回则用新域名 |
+| 托管 | CF Worker + KV（免费、需科学对抗封锁风险） | **腾讯 EdgeOne Pages + Pages Functions + Blob**（国内可达、免费额度、Pages 与 CF 用法近乎 1:1） |
+| 域名 | KataBump 免费二级域名 NS→CF | 同一域名加 TXT 验证 + CNAME 到 EdgeOne（子域 `www`，根域不行） |
 | 客户端 | 单源硬编码，换域名必须重装 APK | **多源 + 清单自举**：`update.json` 里带 `mirrors`/`logApi`，以后换托管**不再需要发新 APK** |
 
 核心原则：**域名与平台彻底解耦**——清单（update.json）里声明镜像与日志地址，客户端持久化并在下次检查时合并，
@@ -37,29 +38,32 @@
 
 EdgeOne 已实测确认的接口形态（与 CF 的差异）：
 - 函数路由：**`/edge-functions/api/log.js` → `/api/log`**（目录名必须是 edge-functions，踩坑：写成 functions 会导致函数不生效）；动态路由 `edge-functions/log/[token].js` → `/log/<token>`（`params.token`）。
-- KV 通过**绑定变量名全局访问**（如 `LOGS.get/put/delete/list`），不是 CF 的 `env.LOGS`（代码里两者兼容写法）。
-- **KV key 只允许字母/数字/下划线** → 前缀用 `log_` / `rate_`，不能用冒号。
-- **KV put 无 TTL 参数** → 旧「未读 24h 自动清理 / 读后续 30 天」策略退化为**永久保留**（1GB 容量 ≈ 300+ 条 3MB 日志，量级足够；限流改用「存时间戳 + 计算剩余」实现，效果等价）。
-- KV 遵循最终一致性（60s 全球同步）→ 限流是软限制（客户端本地还有 15 分钟节流兜底，双保险仍在）。
-- 部署：Git 集成（push 到 GitHub 自动构建）或 `edgeone pages deploy`；本地调试 `edgeone pages init / link / dev`。
+- **存储选型：Blob 而非 KV**。KV 要走「控制台申请开通 → 人工审核 → 建命名空间 → 绑定项目」，审核周期长（社区有人 20+ 天仍在审批）；Blob 是 `getStore('name')` 即用即得，首次调用平台自动创建命名空间，**无需开通/审核/绑定**。
+- Blob SDK：`@edgeone/pages-blob`（当前 `0.0.18`），API `getStore / set / get / delete / list`；单值上限 25 MB，免费额度 1 GB；`get` 不存在返回 `null`；key 无字符集限制（本仓库仍沿用 `log_` / `rate_` 前缀）。
+- Blob 默认最终一致，可传 `{ consistency: 'strong' }` 走强一致读——**限流判定与查看页必须用强一致**，否则「刚传完立刻点链接」会读到旧值/空值。
+- Blob 无 TTL → 旧「未读 24h 自动清理 / 读后续 30 天」策略退化为**永久保留**（1 GB ≈ 300+ 条 3 MB 日志，量级足够；限流改用「存时间戳 + 计算剩余」实现，效果等价）。
+- 请求 body 上限 1 MB（平台硬限制）→ 函数侧单次上传上限 900 KB，客户端同步截断。
+- 部署：Git 集成（push 到 GitHub 自动构建，含 `npm install`）或 `edgeone pages deploy`；本地调试 `edgeone pages init / link / dev`。
 
 ---
 
-## 三、域名策略（二选一，可先 A 后悔再 B）
+## 三、域名策略（已落地：`www` 子域 + CNAME）
 
-### 路径 A：救回 hongguo.kdns.fr（推荐）
-KataBump 只是免费二级域名商，**它没被封**——之前是你把 NS 指到 CF 才被牵连。
-1. EdgeOne Pages 项目上线（先用默认域名验证可用）；
-2. EdgeOne 控制台「自定义域名」添加 `hongguo.kdns.fr`，按提示在 KataBump 侧把 NS/DNS 改指 EdgeOne；
-3. 域名生效后，**已装的 1.0.17 客户端无需任何操作，自动恢复更新**（它们只认这个域名）。
+### 实际接入流程（EdgeOne Pages 自定义域名）
+1. 项目 → 域名管理 → 添加自定义域名 `www.hongguo.kdns.fr`；
+2. **TXT 归属验证**：同一父域的子域会继承验证结果，已验证过根域时自动跳过；
+3. 按弹窗在 KataBump 加 **CNAME**，目标**按域名逐个生成**：
+   - 根域 `hongguo.kdns.fr` → `hongguo.kdns.fr.pages.dnsoe4.com`
+   - `www` → `www.hongguo.kdns.fr.pages.dnsoe6.com`（**以控制台弹窗为准，不要套用其它域名的 dnsoe 编号**）
+4. CNAME 指过去后平台才**懒激活**目标（指之前目标本身 NXDOMAIN），随后解析出 `43.174.246.66 / 43.174.247.66` 并签发免费证书（TrustAsia DV，`CN=www.hongguo.kdns.fr`，90 天）。
 
-### 路径 B：换新域名（KataBump 账号也没了时）
-1. EdgeOne 项目用默认域名（或再申请一个免费二级域名绑定过去）；
-2. 已装客户端只能**手动安装一次 v1.0.18**（内置新源），此后靠清单自举永不重装；
-3. 与历史上 workers.dev→kdns.fr 迁移的教训同构（那批 v1.0.1 用户就是手动救回来的）。
+### 两个硬约束（踩过坑）
+- **根域不能放 CNAME**：KataBump 的 zone 是 `hongguo.kdns.fr`，apex（@）放 CNAME 与 SOA/NS 冲突（RFC 1034），所以根域**无法**指向 EdgeOne，只能用 `www` 子域。因此客户端 `NEW_HOST` 必须写 `https://www.hongguo.kdns.fr`。
+- **默认域名国内不可匿名访问**：`*.edgeone.site` 等平台默认域名受合规限制，国内网络直接访问会失败；必须走自定义域名（加速区域选「全球可用区（不含中国大陆）」免备案）。`.fr` 无法工信部备案，绝不能选含大陆区域。
 
-> 顺序建议：先把 EdgeOne 项目上线跑通 → 再去 KataBump 改 NS（路径 A）。即使 NS 改到一半失败，
-> 新 APK（v1.0.18）里 kdns.fr 与新源都在源列表里，两边都能收。
+### 旧域与救回
+- `hongguo.kdns.fr`（CF 时代）仍在客户端 `HOSTS` 首位，快速失败后自动切到 `NEW_HOST`；已装 1.0.17 客户端装上 v1.0.18 后即靠多源自愈。
+- EdgeOne 控制台里那个无法生效的根域自定义域名可直接删掉，避免误配。
 
 ---
 
@@ -112,9 +116,9 @@ KataBump 只是免费二级域名商，**它没被封**——之前是你把 NS 
 1. 注册 EdgeOne（国内站需实名；国际版 pages.edgeone.ai 免实名，二选一）；
 2. Pages → 创建项目 → 关联 GitHub 仓库 `chengxue-official/hongguoA`（Git 集成，push 即部署）；
 3. 输出目录无需手动配置——仓库根 `edgeone.json` 已写死 `"outputDirectory": "public"`（踩坑：默认输出目录是仓库根 `/`，导致 `/` 与 `/update.json` 全 404；控制台若改过此项请与配置文件保持一致）；
-4. Pages → KV 存储 → 开通账户 → 创建命名空间（如 `hongguo-logs`）→ 绑定到项目，**变量名填 `LOGS`**（代码按此名访问）；
+4. **无需任何存储控制台配置**：Blob 由 `getStore('hougtime')` 首次调用自动建命名空间（KV 需人工审核，不用）；
 5. 测试 `https://<默认域名>/update.json`、`/api/log`、电视端国内可达性；
-6. （路径 A）自定义域名绑定 `hongguo.kdns.fr`，KataBump 改 NS。
+6. 自定义域名绑定 `www.hongguo.kdns.fr`（TXT 验证 + CNAME，见第三节）。
 
 ---
 
@@ -137,14 +141,15 @@ cd d:\hongguo\hongguoTV-release
 | 风险 | 兜底 |
 |---|---|
 | EdgeOne 也封/收费 | 清单自举：新源写进 update.json 的 mirrors 即可热切，客户端零改动 |
-| 新域名国内不可达 | 上线后先电视实测（`/update.json` 200）再发版；不行走路径 A 换回 kdns.fr |
+| 新域名国内不可达 | 上线后先电视实测（`/update.json` 200）再发版；已验证 `www.hongguo.kdns.fr` 可用 |
 | 下载被劫持/损坏 | sha256 校验 + 多源逐个降级 |
 | 日志 API 挂 | 客户端自动降级飞书分片卡片（原有逻辑），日志不丢 |
-| KV 无 TTL 日志堆积 | 1GB 上限前在控制台手动清；量大再加定期清理函数 |
+| Blob 无 TTL 日志堆积 | 1 GB 上限前用 `list` + `delete` 清；量大再加定期清理函数 |
 
-## 九、你需要做的一件事清单
+## 九、已完成事项
 
-1. 注册 EdgeOne，按第六节控制台步骤建项目 + KV 绑定（变量名 `LOGS`）；
-2. 把项目默认域名（形如 `https://<project>.mof.icu` 或 `*.edgeone.site`）发我，我填进
-   `UpdateChecker.NEW_HOST`、`release.ps1` 的 `logApi/mirrors`，出 v1.0.18 正式 APK；
-3. 决定域名路径 A/B（A：去 KataBump 改 NS；B：手动给电视装一次新 APK）。
+1. EdgeOne 项目已建（Git 集成 `chengxue-official/hongguoA`），输出目录 `public`；
+2. 存储走 Blob（`@edgeone/pages-blob`，命名空间 `hougtime`），无需审核；
+3. 自定义域名 `www.hongguo.kdns.fr` 已生效（CNAME + 免费证书），`/update.json`、APK、`/api/log`、`/log/<token>` 全部线上验证通过；
+4. v1.0.18 正式包已发布（`NEW_HOST` / `LOG_API` 均指向新域名）；
+5. 待办：EdgeOne 控制台删除无法生效的根域自定义域名；真机 1.0.17→1.0.18 无感更新回归。

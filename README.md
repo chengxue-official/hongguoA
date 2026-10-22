@@ -1,6 +1,6 @@
 # hongguoA — 红果TV 热更新分发仓库
 
-红果短剧 TV 版 —— 热更新分发仓库（**腾讯 EdgeOne Pages** 托管：静态资源 + Pages Functions + EdgeOne KV）。
+红果短剧 TV 版 —— 热更新分发仓库（**腾讯 EdgeOne Pages** 托管：静态资源 + Pages Functions + EdgeOne Blob）。
 
 > 本仓库**只存放分发文件**，不存放 App 源码（源码在 HougTime 仓库）。
 > 原 Cloudflare Workers 链路因账号被封已作废，迁移方案见 [HOTUPDATE-PLAN.md](HOTUPDATE-PLAN.md)。
@@ -16,15 +16,17 @@
 │   ├── hongguo-<版本>.apk  # 热更新包
 │   └── index.html          # 落地页
 ├── legacy/                 # 旧 Cloudflare Worker（已死，仅历史参考）
+├── package.json            # 仅声明 @edgeone/pages-blob（日志存储 SDK）
 ├── release.ps1             # 一键发版脚本
 └── HOTUPDATE-PLAN.md       # 迁移方案与运维手册
 ```
 
-部署后访问路径（域名由 EdgeOne 提供，或在控制台绑定自定义域名）：
+线上地址：`https://www.hongguo.kdns.fr`（EdgeOne 自定义域名 + 免费证书）
 
-- `https://<你的域名>/update.json`
-- `https://<你的域名>/hongguo-1.0.18.apk`
-- `POST https://<你的域名>/api/log`
+- `GET  /update.json`
+- `GET  /hongguo-1.0.18.apk`
+- `POST /api/log`
+- `GET  /log/<token>`、`GET /log/<token>.txt`
 
 ## update.json 格式（v2，向后兼容）
 
@@ -65,6 +67,7 @@ EdgeOne Pages 关联本仓库后（Git 集成），`git push` 自动构建部署
 
 1. Pages → 创建项目 → 关联本仓库（`chengxue-official/hongguoA`）；
 2. 输出目录无需手动配置——仓库根的 `edgeone.json` 已锁定 `"outputDirectory": "public"`（踩坑：EdgeOne 默认输出目录是仓库根 `/`，不锁定的话 `/` 和 `/update.json` 全 404「页面不存在」）；
-3. KV 存储 → 开通 → 创建命名空间（如 `hongguo-logs`）→ 绑定到项目，**环境变量名填 `LOGS`**（函数按此名访问）；
+3. **无需配置任何存储**：日志走 Blob（`@edgeone/pages-blob`），`getStore('hougtime')` 首次调用自动建命名空间，免开通免审核（KV 需人工审核，故不用）；
 4. 测试 `https://<默认域名>/update.json`、`/api/log` 与电视端国内可达性；
-5. 需要救回已装客户端时：绑定自定义域名 `hongguo.kdns.fr`，KataBump 把 NS 改指 EdgeOne。
+5. 绑定自定义域名：添加 `www.hongguo.kdns.fr` → TXT 归属验证（同父域子域继承）→ 按弹窗加 CNAME（目标形如 `www.hongguo.kdns.fr.pages.dnsoe6.com`，每个域名独立生成）→ 平台懒激活并签发免费证书。
+   注意：**根域 `hongguo.kdns.fr` 不能放 CNAME**（apex 与 SOA/NS 冲突），只能用 `www` 子域；平台默认域名（`*.edgeone.site`）国内不可匿名访问，必须走自定义域名。
