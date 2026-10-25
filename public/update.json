@@ -1,9 +1,9 @@
 {
-    "versionCode":  119,
-    "versionName":  "1.0.19",
-    "apk":  "hongguo-1.0.19.apk",
-    "notes":  "修复内容源时好时坏：栏目/详情改用 X-Argus 签名（实测必出数据）；设备注册失败自动重试 3 次；移除第三方观果源，内容仅来自红果官方通道（App 接口 + 网页版）",
-    "sha256":  "f0b59f26502c2dec371f4dc8c1f605b710f59709623bf7219fd25edf1951bd85",
+    "versionCode":  120,
+    "versionName":  "1.0.20",
+    "apk":  "hongguo-1.0.20.apk",
+    "notes":  "修复：榜单偶发白屏需反复刷新；手机扇码跨屏输入打不开/一直转圈；首字母搜索漏剧（多音字与 X 段拼音映射）",
+    "sha256":  "948b8d89435c8168f8e9e76fa07a77cabedb67350228f3c7e943ad08d8ba9cf1",
     "mirrors":  [
 
                 ],
