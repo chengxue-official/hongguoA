@@ -1,9 +1,9 @@
 {
-    "versionCode":  120,
-    "versionName":  "1.0.20",
-    "apk":  "hongguo-1.0.20.apk",
-    "notes":  "修复：榜单偶发白屏需反复刷新；手机扇码跨屏输入打不开/一直转圈；首字母搜索漏剧（多音字与 X 段拼音映射）",
-    "sha256":  "948b8d89435c8168f8e9e76fa07a77cabedb67350228f3c7e943ad08d8ba9cf1",
+    "versionCode":  121,
+    "versionName":  "1.0.21",
+    "apk":  "hongguo-1.0.21.apk",
+    "notes":  "新增分类页：真人剧/漫剧/AI剧 三大类 + 六维筛选（主题/设定/背景/推荐/受众/时间），遥控器可逐行选择；优化分类页左右留白与胶囊式分类 Tab",
+    "sha256":  "7a0ce5b6ccead2d6e1fe16f18b748009f57832830076a03907607f5a75c0b8e8",
     "mirrors":  [
 
                 ],
