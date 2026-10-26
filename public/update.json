@@ -1,9 +1,9 @@
 {
-    "versionCode":  122,
-    "versionName":  "1.0.22",
-    "apk":  "hongguo-1.0.22.apk",
-    "notes":  "修复搜索结果偶发显示「全0集」、主界面分类入口被裁切、搜索记录文字截断；手机播放页返回键改为单击直接退出",
-    "sha256":  "3d69e1bed60715d952a68a86782b52a4b5312950586618258f8d064eb4e9f155",
+    "versionCode":  123,
+    "versionName":  "1.1.0",
+    "apk":  "hongguo-1.1.0.apk",
+    "notes":  "1. 手机端进入即竖屏，去掉先横屏再竖屏的切换 2. 搜索速度大幅提升（最坏 51s 降至 7s）",
+    "sha256":  "aea7fa6e6020ebfc7794e971e730b44014419ecdc6815bb10671bc327681979a",
     "mirrors":  [
 
                 ],
