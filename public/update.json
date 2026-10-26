@@ -1,9 +1,9 @@
 {
-    "versionCode":  123,
-    "versionName":  "1.1.0",
-    "apk":  "hongguo-1.1.0.apk",
-    "notes":  "1. 手机端进入即竖屏，去掉先横屏再竖屏的切换 2. 搜索速度大幅提升（最坏 51s 降至 7s）",
-    "sha256":  "aea7fa6e6020ebfc7794e971e730b44014419ecdc6815bb10671bc327681979a",
+    "versionCode":  124,
+    "versionName":  "1.1.1",
+    "apk":  "hongguo-1.1.1.apk",
+    "notes":  "1. 修复海信 VIDAA 等电视被误判成手机界面（竖屏） 2. 首页顶部新增『界面』切换按钮，可手动切电视/手机界面 3. 修复电视界面密度偶发缩小的问题 4. 修复设备注册失败时的误导提示，多域名重试注册 5. 诊断日志容量提升 3 倍，保留启动注册记录",
+    "sha256":  "4f89bd7d68b1d95ece7fb6ab87f5a11b27a46bf5bf6374fd668da45b38b40bda",
     "mirrors":  [
 
                 ],
