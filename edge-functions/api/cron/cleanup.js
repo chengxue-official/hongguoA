@@ -33,6 +33,8 @@ const RETAIN_DAYS = 30;
 const MIN_INTERVAL_SECONDS = 6 * 3600;
 /** 单次最多处理的「无索引孤儿」条数（正常应为 0，只为兼容历史数据） */
 const MAX_ORPHANS = 200;
+/** 手动清理密钥（与 api/diag/recent.js 同一把，仅用于运维） */
+const DIAG_KEY = 'hgdiag_k7Qm2Xv9Rt4Z';
 
 function blobStore() {
   try {
@@ -63,6 +65,12 @@ function dayKey(seconds) {
   return d.toISOString().slice(0, 10).replace(/-/g, '');
 }
 
+/** 东八区 yyyymmdd 当天 00:00 的秒级时间戳（手动清理的截止点）。 */
+function dayStartSeconds(day) {
+  const iso = `${day.slice(0, 4)}-${day.slice(4, 6)}-${day.slice(6, 8)}T00:00:00+08:00`;
+  return Math.floor(Date.parse(iso) / 1000) || 0;
+}
+
 /** 限频：读上次运行时间，太近就跳过；否则立刻占位。 */
 async function shouldRun(store) {
   let last = 0;
@@ -84,10 +92,12 @@ async function shouldRun(store) {
 
 /**
  * 主清理：删除 RETAIN_DAYS 天前的 idx_ 及其对应 log_，顺带清长期不活跃设备的 rate_。
+ * beforeDay：可选的东八区 yyyymmdd，指定后只清「该日之前」的日志（手动运维用）。
  */
-async function purge(store) {
+async function purge(store, beforeDay = '') {
   const cutoff = nowSeconds() - RETAIN_DAYS * 86400;
-  const cutoffDay = dayKey(cutoff); // yyyymmdd，字符串按字典序即时间序
+  const cutoffDay = beforeDay || dayKey(cutoff); // yyyymmdd，字符串按字典序即时间序
+  const cutoffSeconds = beforeDay ? dayStartSeconds(beforeDay) : cutoff;
 
   const stats = { scannedIdx: 0, deletedLog: 0, deletedIdx: 0, deletedRate: 0, orphansChecked: 0, errors: 0 };
   const indexedTokens = new Set();
@@ -145,7 +155,7 @@ async function purge(store) {
         }
         const uploadedAt = rec && rec.uploadedAt ? Date.parse(rec.uploadedAt) / 1000 : 0;
         // 解析不出时间的不删（宁可留着人工看，也不要误删用户的日志）
-        if (uploadedAt && uploadedAt < cutoff) {
+        if (uploadedAt && uploadedAt < cutoffSeconds) {
           await store.delete(blob.key);
           stats.deletedLog++;
         }
@@ -178,16 +188,25 @@ async function purge(store) {
   return { ...stats, cutoffDay, retainDays: RETAIN_DAYS };
 }
 
-export async function onRequestPost() {
+export async function onRequestPost({ request }) {
   const store = blobStore();
   if (!store) {
     return json({ code: 500, msg: 'Blob getStore 初始化失败' }, 500);
   }
-  if (!(await shouldRun(store))) {
+  // 手动清理：POST /api/cron/cleanup?before=20261026&key=<DIAG_KEY>
+  // 只删「before 那天之前」的日志，不占用定时任务的 6 小时限频窗口。
+  const url = new URL(request.url);
+  const before = (url.searchParams.get('before') || '').trim();
+  const manual = /^\d{8}$/.test(before);
+  if (manual) {
+    if (url.searchParams.get('key') !== DIAG_KEY) {
+      return json({ code: 403, msg: 'forbidden' }, 403);
+    }
+  } else if (!(await shouldRun(store))) {
     return json({ code: 0, skipped: true, msg: '距上次清理不足 6 小时，已跳过' });
   }
-  const result = await purge(store);
-  return json({ code: 0, ranAt: new Date().toISOString(), result });
+  const result = await purge(store, manual ? before : '');
+  return json({ code: 0, ranAt: new Date().toISOString(), manual, result });
 }
 
 export async function onRequestOptions() {
