@@ -70,10 +70,18 @@ foreach ($target in @('32', '64')) {
     Write-Host "SHA-256: $sha"
     if ($target -eq '64') { $sha64 = $sha } else { $sha32 = $sha }
 }
-# 删掉除本次两个新包之外的旧包（含上个版本的两个包）
-Get-ChildItem -LiteralPath $publicDir -Filter 'hongguo-*.apk' |
-    Where-Object { $_.Name -ne $apkName32 -and $_.Name -ne $apkName64 } |
-    ForEach-Object { Write-Host "删除旧包 $($_.Name)"; Remove-Item -LiteralPath $_.FullName -Force }
+# 删掉除本次两个新包之外的旧包（含上个版本的两个包）。
+# BUG-116：光删工作区文件不够——旧包是 git 跟踪的发布物，不提交删除，
+# 远端仓库与 CDN 上会永久累积历史 APK（按老 URL 仍可下到旧版本）。
+# 记下文件名，-Push 时一并 git add（add 已跟踪但已删除的路径 = 暂存删除）。
+$deletedOld = @()
+$oldFiles = @(Get-ChildItem -LiteralPath $publicDir -Filter 'hongguo-*.apk' |
+    Where-Object { $_.Name -ne $apkName32 -and $_.Name -ne $apkName64 })
+foreach ($f in $oldFiles) {
+    Write-Host "删除旧包 $($f.Name)"
+    $deletedOld += $f.Name
+    Remove-Item -LiteralPath $f.FullName -Force
+}
 
 # ---------- 4. update.json ----------
 # apk/sha256 指向 32 位包：旧客户端只认这两个字段，保证它们继续可更新；
@@ -114,7 +122,9 @@ Write-Host "已生成 public\update.json" -ForegroundColor Green
 if ($Push) {
     Push-Location $releaseDir
     try {
-        git add "public/$apkName32" "public/$apkName64" "public/update.json"
+        $addPaths = @("public/$apkName32", "public/$apkName64", "public/update.json")
+        foreach ($d in $deletedOld) { $addPaths += "public/$d" }
+        git add -- $addPaths
         git commit -m "release: v$vn ($vc)"
         git push
         if ($LASTEXITCODE -ne 0) { throw "git push 失败" }
