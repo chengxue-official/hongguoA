@@ -3,9 +3,10 @@
 
   做的事：
     1. 从 HougTime/app/build.gradle.kts 读 versionCode / versionName
-    2. 调 gradlew assembleDebug 构建 APK
-    3. 拷到 public/hongguo-<versionName>.apk，删掉 public 下的旧包
-    4. 计算 SHA-256，生成 public/update.json（v2 schema）
+    2. 调 gradlew assembleDebug 构建 APK 两次（-PabiTarget=32 / =64）
+    3. 分别拷到 public/hongguo-<versionName>.apk（32 位）与
+       public/hongguo-<versionName>-arm64.apk（64 位），删掉 public 下的其它旧包
+    4. 计算两个包的 SHA-256，生成 public/update.json（v2 schema）
     5. 可选 -Push：git add/commit/push（EdgeOne Pages 的 Git 集成会自动部署）
 
   用法：
@@ -43,32 +44,40 @@ $vn = [regex]::Match($text, 'versionName\s*=\s*"([^"]+)"').Groups[1].Value
 if ($vc -le 0 -or -not $vn) { throw "无法从 $gradle 读取版本号" }
 Write-Host "版本: v$vn ($vc)" -ForegroundColor Cyan
 
-# ---------- 2. 构建 ----------
-Write-Host "构建中..." -ForegroundColor Cyan
-Push-Location $AppDir
-try {
-    & .\gradlew.bat :app:assembleDebug
-    if ($LASTEXITCODE -ne 0) { throw "构建失败（exit $LASTEXITCODE）" }
-} finally {
-    Pop-Location
-}
-
+# ---------- 2. 构建（双 ABI：32 位 + 64 位，各打一次） ----------
+$apkName32 = "hongguo-$vn.apk"
+$apkName64 = "hongguo-$vn-arm64.apk"
 $apkSrc = Join-Path $AppDir 'app\build\outputs\apk\debug\app-debug.apk'
-if (-not (Test-Path -LiteralPath $apkSrc)) { throw "找不到构建产物: $apkSrc" }
+$sha32 = ""; $sha64 = ""
+foreach ($target in @('32', '64')) {
+    $name = if ($target -eq '64') { $apkName64 } else { $apkName32 }
+    Write-Host "构建中（abiTarget=$target）..." -ForegroundColor Cyan
+    Push-Location $AppDir
+    try {
+        & .\gradlew.bat :app:assembleDebug "-PabiTarget=$target"
+        if ($LASTEXITCODE -ne 0) { throw "构建失败（abiTarget=$target, exit $LASTEXITCODE）" }
+    } finally {
+        Pop-Location
+    }
+    if (-not (Test-Path -LiteralPath $apkSrc)) { throw "找不到构建产物: $apkSrc" }
 
-# ---------- 3. 拷包、删旧包 ----------
-$apkName = "hongguo-$vn.apk"
-$apkDst = Join-Path $publicDir $apkName
-Copy-Item -LiteralPath $apkSrc -Destination $apkDst -Force
+    # ---------- 3. 拷包 ----------
+    $apkDst = Join-Path $publicDir $name
+    Copy-Item -LiteralPath $apkSrc -Destination $apkDst -Force
+    $sizeMb = [math]::Round((Get-Item -LiteralPath $apkDst).Length / 1MB, 2)
+    Write-Host "APK: public\$name ($sizeMb MB)" -ForegroundColor Green
+    $sha = (Get-FileHash -LiteralPath $apkDst -Algorithm SHA256).Hash.ToLowerInvariant()
+    Write-Host "SHA-256: $sha"
+    if ($target -eq '64') { $sha64 = $sha } else { $sha32 = $sha }
+}
+# 删掉除本次两个新包之外的旧包（含上个版本的两个包）
 Get-ChildItem -LiteralPath $publicDir -Filter 'hongguo-*.apk' |
-    Where-Object { $_.Name -ne $apkName } |
+    Where-Object { $_.Name -ne $apkName32 -and $_.Name -ne $apkName64 } |
     ForEach-Object { Write-Host "删除旧包 $($_.Name)"; Remove-Item -LiteralPath $_.FullName -Force }
-$sizeMb = [math]::Round((Get-Item -LiteralPath $apkDst).Length / 1MB, 2)
-Write-Host "APK: public\$apkName ($sizeMb MB)" -ForegroundColor Green
 
 # ---------- 4. update.json ----------
-$sha = (Get-FileHash -LiteralPath $apkDst -Algorithm SHA256).Hash.ToLowerInvariant()
-Write-Host "SHA-256: $sha"
+# apk/sha256 指向 32 位包：旧客户端只认这两个字段，保证它们继续可更新；
+# apk64/sha256_64 供 64 位进程的新客户端使用（清单缺失时客户端回落 apk）。
 
 # 沿用旧清单里的 notes / mirrors / logApi（未显式传入时）
 $oldNotes = ""; $oldMirrors = @(); $oldLogApi = ""
@@ -89,9 +98,11 @@ $apiValue = if ($LogApi) { $LogApi } else { $oldLogApi }
 $obj = [ordered]@{
     versionCode = $vc
     versionName = $vn
-    apk         = $apkName
+    apk         = $apkName32
     notes       = $Notes
-    sha256      = $sha
+    sha256      = $sha32
+    apk64       = $apkName64
+    sha256_64   = $sha64
     mirrors     = @($mirrorList)
     logApi      = $apiValue
 }
@@ -103,7 +114,7 @@ Write-Host "已生成 public\update.json" -ForegroundColor Green
 if ($Push) {
     Push-Location $releaseDir
     try {
-        git add "public/$apkName" "public/update.json"
+        git add "public/$apkName32" "public/$apkName64" "public/update.json"
         git commit -m "release: v$vn ($vc)"
         git push
         if ($LASTEXITCODE -ne 0) { throw "git push 失败" }
