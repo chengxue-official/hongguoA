@@ -74,13 +74,27 @@ foreach ($target in @('32', '64')) {
 # BUG-116：光删工作区文件不够——旧包是 git 跟踪的发布物，不提交删除，
 # 远端仓库与 CDN 上会永久累积历史 APK（按老 URL 仍可下到旧版本）。
 # 记下文件名，-Push 时一并 git add（add 已跟踪但已删除的路径 = 暂存删除）。
+# BUG-120：旧名单只看磁盘。若上一轮「不带 -Push」的运行已把旧包从工作区
+# 删掉（删除停在未暂存状态），本轮 Get-ChildItem 就再也看不到它，$deletedOld
+# 为空，git add 不会暂存那条删除，远端旧包继续存活。这里同时核对 git 索引
+# 的跟踪清单，磁盘上没有的也补进待删列表。
 $deletedOld = @()
-$oldFiles = @(Get-ChildItem -LiteralPath $publicDir -Filter 'hongguo-*.apk' |
-    Where-Object { $_.Name -ne $apkName32 -and $_.Name -ne $apkName64 })
-foreach ($f in $oldFiles) {
-    Write-Host "删除旧包 $($f.Name)"
-    $deletedOld += $f.Name
-    Remove-Item -LiteralPath $f.FullName -Force
+$diskOld = @(Get-ChildItem -LiteralPath $publicDir -Filter 'hongguo-*.apk' |
+    Where-Object { $_.Name -ne $apkName32 -and $_.Name -ne $apkName64 } |
+    ForEach-Object { $_.Name })
+$trackedOld = @(git ls-files -- 'public/hongguo-*.apk' |
+    ForEach-Object { Split-Path -Leaf $_ } |
+    Where-Object { $_ -ne $apkName32 -and $_ -ne $apkName64 })
+$oldNames = @($diskOld + $trackedOld | Sort-Object -Unique)
+foreach ($name in $oldNames) {
+    $p = Join-Path $publicDir $name
+    if (Test-Path -LiteralPath $p) {
+        Write-Host "删除旧包 $name"
+        Remove-Item -LiteralPath $p -Force
+    } else {
+        Write-Host "旧包 $name 工作区已删（上轮遗留未提交删除），本次提交一并移除"
+    }
+    $deletedOld += $name
 }
 
 # ---------- 4. update.json ----------
