@@ -1,11 +1,11 @@
 {
-    "versionCode":  139,
-    "versionName":  "2.0.7",
-    "apk":  "hongguo-2.0.7.apk",
+    "versionCode":  140,
+    "versionName":  "2.0.8",
+    "apk":  "hongguo-2.0.8.apk",
     "notes":  "1. 修复看到一半频繁转圈：切集不再重复下载，已预加载的剧集直接播放\n2. 修复电视遥控器确定键无法继续播放、长按左右键快进快退失效\n3. 预加载失败自动退避重试，减少网络波动造成的卡顿\n4. 顶部信息栏显示当前倍速",
-    "sha256":  "b55440605b236d1d008d7d10946e331c0024c0dd8ac27510ed9c42548bbb2b36",
-    "apk64":  "hongguo-2.0.7-arm64.apk",
-    "sha256_64":  "3b23479bbeae82d82a1ccf15b7c3ff10583581fad62b2ba82910f6b450bb35bf",
+    "sha256":  "98d25b72522c756895b31a92b10f3029acc5dd2e866eb80a34f269a1f5bf26ba",
+    "apk64":  "hongguo-2.0.8-arm64.apk",
+    "sha256_64":  "af27aeb7394cf197be1d8fadb7eb5d4449827f2907d4498d625daa1db71758a9",
     "mirrors":  [
 
                 ],
