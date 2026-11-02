@@ -1,11 +1,11 @@
 {
-    "versionCode":  141,
-    "versionName":  "2.0.9",
-    "apk":  "hongguo-2.0.9.apk",
-    "notes":  "1. 修复部分电视（小米电视 4 等 Amlogic 机型）起播直接闪退\n2. 修复内存较小的电视播放高清剧集时偶发「内存不足、播放失败」\n3. 设备支持 AV1 时，可播放只提供 AV1 编码的剧集\n4. 修复部分电视点「立即更新」后没有反应",
-    "sha256":  "64a87c7bb78b60b466da09763b9cd61e3f9e71a48e147a58f4100626b2e4cd94",
-    "apk64":  "hongguo-2.0.9-arm64.apk",
-    "sha256_64":  "9f4f0fa33e6dd6e681ff0aa721f24a79c4645c048f406bfcb0c9cf56f96c7dd7",
+    "versionCode":  142,
+    "versionName":  "2.0.10",
+    "apk":  "hongguo-2.0.10.apk",
+    "notes":  "1. 修复部分电视（如康佳 Android 9）播放时画面卡顿、音画不同步\n2. 软解时自动降低一档清晰度、倍速最高 1.5 倍，保证画面跟得上声音\n3. 修复切换硬解后清晰度、倍速显示不刷新的问题\n4. 修复部分电视点「立即更新」后没有反应",
+    "sha256":  "403c6c2729a19c5c728028cc5ad5858dc8729cbdb13f378e24a02dfae5e5f3fe",
+    "apk64":  "hongguo-2.0.10-arm64.apk",
+    "sha256_64":  "e366e04a354558ba909f0d02acc98aa85351262b4b0a6cc526af4618c4fb6675",
     "mirrors":  [
 
                 ],
