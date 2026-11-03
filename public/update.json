@@ -1,11 +1,11 @@
 {
-    "versionCode":  143,
-    "versionName":  "2.0.11",
-    "apk":  "hongguo-2.0.11.apk",
-    "notes":  "修复竖屏剧清晰度错档：1080P 不再显示成 600 多 P，切 720P 会真正生效；软解自动降档仅对自动清晰度生效；恢复软解下的下一集预加载，连播不再每集等十几秒。",
-    "sha256":  "8626b9df2ed460ebe4af49438124321372cfe576424d48e35ceeb1b45df788a9",
-    "apk64":  "hongguo-2.0.11-arm64.apk",
-    "sha256_64":  "8cff22b4e02aa367b0940d87b50e19a2db6a6394b5ac62b20f1698622b50bb38",
+    "versionCode":  144,
+    "versionName":  "2.0.12",
+    "apk":  "hongguo-2.0.12.apk",
+    "notes":  "首播提速：进详情页后自动预取首集片源，点播放从原来的十几秒压到 3 秒内；连播衔接与清晰度选择不受影响。",
+    "sha256":  "54013ab343ba8ee3969a7fc92add5d3db0f6416574006d09c3595adcc4dd7a00",
+    "apk64":  "hongguo-2.0.12-arm64.apk",
+    "sha256_64":  "f1561ba8fc08cc6925ecedd989a5b0e49288d5286c1a2a35053fcabdb78c7864",
     "mirrors":  [
 
                 ],
