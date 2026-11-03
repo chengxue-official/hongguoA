@@ -1,11 +1,11 @@
 {
-    "versionCode":  142,
-    "versionName":  "2.0.10",
-    "apk":  "hongguo-2.0.10.apk",
-    "notes":  "1. 修复部分电视（如康佳 Android 9）播放时画面卡顿、音画不同步\n2. 软解时自动降低一档清晰度、倍速最高 1.5 倍，保证画面跟得上声音\n3. 修复切换硬解后清晰度、倍速显示不刷新的问题\n4. 修复部分电视点「立即更新」后没有反应",
-    "sha256":  "403c6c2729a19c5c728028cc5ad5858dc8729cbdb13f378e24a02dfae5e5f3fe",
-    "apk64":  "hongguo-2.0.10-arm64.apk",
-    "sha256_64":  "e366e04a354558ba909f0d02acc98aa85351262b4b0a6cc526af4618c4fb6675",
+    "versionCode":  143,
+    "versionName":  "2.0.11",
+    "apk":  "hongguo-2.0.11.apk",
+    "notes":  "修复竖屏剧清晰度错档：1080P 不再显示成 600 多 P，切 720P 会真正生效；软解自动降档仅对自动清晰度生效；恢复软解下的下一集预加载，连播不再每集等十几秒。",
+    "sha256":  "8626b9df2ed460ebe4af49438124321372cfe576424d48e35ceeb1b45df788a9",
+    "apk64":  "hongguo-2.0.11-arm64.apk",
+    "sha256_64":  "8cff22b4e02aa367b0940d87b50e19a2db6a6394b5ac62b20f1698622b50bb38",
     "mirrors":  [
 
                 ],
