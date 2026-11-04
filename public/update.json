@@ -1,11 +1,11 @@
 {
-    "versionCode":  147,
-    "versionName":  "2.0.15",
-    "apk":  "hongguo-2.0.15.apk",
-    "notes":  "修复部分剧集『只有声音』：取流改用手机端通道，片源改发 HEVC；同时补齐 AV1 片源缺失的配置信息，极端情况下 AV1 也不再黑屏。本版为验证版，若某剧无法取流请上传日志。",
-    "sha256":  "29dae61d2d91fbfa4f4b8f6fa98f438ec88a1f543e0835e2ca7238635b3954ec",
-    "apk64":  "hongguo-2.0.15-arm64.apk",
-    "sha256_64":  "132d24c530ae61303cbcfcf48d8df9468a91eafedb37299b0ead1dbd297151da",
+    "versionCode":  148,
+    "versionName":  "2.0.16",
+    "apk":  "hongguo-2.0.16.apk",
+    "notes":  "修复部分剧集黑屏只有声音：按片源真实编码识别 AV1 片源，并补齐播放器所需配置；取流通道同步调整，更多剧集改由普通 HEVC 下发。本版为验证版，若异常请上传日志。",
+    "sha256":  "8c7a66a53f4432d6385ddbbc1be894817eb6a7de4b9b91c514cd593d6f8d8829",
+    "apk64":  "hongguo-2.0.16-arm64.apk",
+    "sha256_64":  "5f374f73fd4f0899c3a684c2ca288f02f114f5023672db6d64c7087b6dbed64c",
     "mirrors":  [
 
                 ],
