@@ -1,11 +1,11 @@
 {
-    "versionCode":  145,
-    "versionName":  "2.0.13",
-    "apk":  "hongguo-2.0.13.apk",
-    "notes":  "修复部分电视播放 AV1 片源黑屏只有声音的问题：把软件解码误判为硬件解码，导致选了 1080P 却放不动；现在这类电视会自动选小档。另：详情页预热首集取流，首播更快。",
-    "sha256":  "b0106b333aac468cc46e8c257c53fdafb1d69b250631a5de8aae85335d627e78",
-    "apk64":  "hongguo-2.0.13-arm64.apk",
-    "sha256_64":  "f325cd6d803100c222dd0c48eec5cdbefa7948ffdd1849aa173927d8db3216fb",
+    "versionCode":  146,
+    "versionName":  "2.0.14",
+    "apk":  "hongguo-2.0.14.apk",
+    "notes":  "自动清晰度修复：不再被误判成最低档，按设备能力取最高可用档；AV1 片源不再黑屏只有声音（加密 AV1 直接提示换集）；修复偶发『下载或解密失败』误报。",
+    "sha256":  "319acde9b31b5a0f4d967df3c9533f9286df54f89c8a7a07177745852e77e32d",
+    "apk64":  "hongguo-2.0.14-arm64.apk",
+    "sha256_64":  "55da6be41bab24686dc6e4e1f9123c9535ad67544a7d863dfd56c0bf88df78e6",
     "mirrors":  [
 
                 ],
