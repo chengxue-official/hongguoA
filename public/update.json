@@ -1,11 +1,11 @@
 {
-    "versionCode":  149,
-    "versionName":  "2.0.17",
-    "apk":  "hongguo-2.0.17.apk",
-    "notes":  "修复部分剧集黑屏只有声音：取流改用全新设备身份，片源改由通用 HEVC 下发；AV1 片源补齐解码所需配置，解码异常时自动切软解或明确提示。若仍有异常请上传日志。",
-    "sha256":  "d2c69c27ba29956ea3ee6805e2ad56481455811aad3ca2360699c1adadd66f50",
-    "apk64":  "hongguo-2.0.17-arm64.apk",
-    "sha256_64":  "b1bbbc225589845bd763ea90a8c8e2f26194f0c3618c5ddfea124c2a6b5a3ee7",
+    "versionCode":  150,
+    "versionName":  "2.0.18",
+    "apk":  "hongguo-2.0.18.apk",
+    "notes":  "取流请求体与 HGTV 完全对齐：补上缺失的 content_type，去掉会触发电视端 AV1 下发的多余字段；片源改回通用 HEVC，部分剧集黑屏只有声音的问题应解决。若仍有异常请上传日志。",
+    "sha256":  "7f29b44996273e862c85512f118008fcdcdd5795a52d0a9a2c96c1de4684d2de",
+    "apk64":  "hongguo-2.0.18-arm64.apk",
+    "sha256_64":  "b47270544914ac60d2eea04f65b6eb65d47c3d5f9673b6ebfadd9950c8ba276f",
     "mirrors":  [
 
                 ],
