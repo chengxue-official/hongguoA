@@ -1,11 +1,11 @@
 {
-    "versionCode":  151,
-    "versionName":  "2.0.19",
-    "apk":  "hongguo-2.0.19.apk",
-    "notes":  "修复 2.0.18 全量取流失败导致的无法播放（已回滚请求体改动）；加密 AV1 片源不再黑屏或报存储错误，直接提示换集。",
-    "sha256":  "5c0b1d6463a9322d68f1a13d50223c081a6c489adb9bbf9775e57b11b42b784f",
-    "apk64":  "hongguo-2.0.19-arm64.apk",
-    "sha256_64":  "bfa738ba67955232cc66560a883012d731cd7f5b1382744300704f3e1d660dc2",
+    "versionCode":  152,
+    "versionName":  "2.0.20",
+    "apk":  "hongguo-2.0.20.apk",
+    "notes":  "2.0.20：修复取流签名（补全 X-Argus/X-Ladon），恢复播放",
+    "sha256":  "5e72a7c0347001b56ce5251dfd289aee9d2dbc29a7e5367c51af15b86eb6b368",
+    "apk64":  "hongguo-2.0.20-arm64.apk",
+    "sha256_64":  "60f74850ca996282c7d24cb906c1b48b305b5c02d52f5921ccdf4fdfe7597aae",
     "mirrors":  [
 
                 ],
