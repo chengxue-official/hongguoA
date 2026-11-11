@@ -1,11 +1,11 @@
 {
-    "versionCode":  152,
-    "versionName":  "2.0.20",
-    "apk":  "hongguo-2.0.20.apk",
-    "notes":  "2.0.20：修复取流签名（补全 X-Argus/X-Ladon），恢复播放",
-    "sha256":  "5e72a7c0347001b56ce5251dfd289aee9d2dbc29a7e5367c51af15b86eb6b368",
-    "apk64":  "hongguo-2.0.20-arm64.apk",
-    "sha256_64":  "60f74850ca996282c7d24cb906c1b48b305b5c02d52f5921ccdf4fdfe7597aae",
+    "versionCode":  154,
+    "versionName":  "2.1.0",
+    "apk":  "hongguo-2.1.0.apk",
+    "notes":  "2.1.0：完整签名修复（Argus/Ladon）恢复播放；新增备用身份、坏域名记忆、TNC 动态域名、取流串行",
+    "sha256":  "75fe74b2700475d3d546b54080cab9c4f0c9571657f9431c90293252512229f9",
+    "apk64":  "hongguo-2.1.0-arm64.apk",
+    "sha256_64":  "9d9bdf4abb9a1729572f080c411f884922317294bf61efdb037eeee15ca74c0b",
     "mirrors":  [
 
                 ],
