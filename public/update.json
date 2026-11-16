@@ -1,11 +1,11 @@
 {
-    "versionCode":  158,
-    "versionName":  "2.1.4",
-    "apk":  "hongguo-2.1.4.apk",
-    "notes":  "修复只有 VVC(bytevc2) 片源的剧集无法播放：取流改要 h265",
-    "sha256":  "855f0fe54623adf1635b6721f28994126e56fe54e2e3540996e9296cda857e01",
-    "apk64":  "hongguo-2.1.4-arm64.apk",
-    "sha256_64":  "ea734b0301ab5d6f40fd33eebd13bbcc7b2d3e2044a92b2920c59d282d8a5483",
+    "versionCode":  159,
+    "versionName":  "2.1.5",
+    "apk":  "hongguo-2.1.5.apk",
+    "notes":  "修复取流：改走 multi_video_model/v1（明文 body + x-medusa），恢复全平台播放",
+    "sha256":  "b4f4be81698932451937da21d55c4f199f3f5f6d361b78b59adcc374f0cce3e1",
+    "apk64":  "hongguo-2.1.5-arm64.apk",
+    "sha256_64":  "dceaff8791dd620ed32e7e4d74384ec86d4013f2bc1bac06e132e98daa119eda",
     "mirrors":  [
 
                 ],
