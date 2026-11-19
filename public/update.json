@@ -1,13 +1,11 @@
 {
-    "versionCode":  159,
-    "versionName":  "2.1.5",
-    "apk":  "hongguo-2.1.5.apk",
-    "notes":  "修复取流：改走 multi_video_model/v1（明文 body + x-medusa），恢复全平台播放",
-    "sha256":  "b4f4be81698932451937da21d55c4f199f3f5f6d361b78b59adcc374f0cce3e1",
-    "apk64":  "hongguo-2.1.5-arm64.apk",
-    "sha256_64":  "dceaff8791dd620ed32e7e4d74384ec86d4013f2bc1bac06e132e98daa119eda",
-    "mirrors":  [
-
-                ],
-    "logApi":  "https://www.hongguo.kdns.fr/api/log"
+    "versionCode": 160,
+    "versionName": "2.1.6",
+    "apk": "hongguo-2.1.6.apk",
+    "notes": "新增「推荐」页：全站混合推荐流（真人剧/漫剧/AI剧），按服务端推荐排序展示；打开应用会自动检查更新，有新版本时提示升级。",
+    "sha256": "4147ffc68225e9bc682f338a8f5698276a7c0b7266cdac6f5b50339fc46e33f2",
+    "apk64": "hongguo-2.1.6-arm64.apk",
+    "sha256_64": "66251ac6dfeec72a92421cd4a89568538280bcc64a965ff268b50eb9842e1cad",
+    "mirrors": [],
+    "logApi": "https://www.hongguo.kdns.fr/api/log"
 }
