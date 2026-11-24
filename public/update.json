@@ -1,11 +1,13 @@
 {
-    "versionCode": 162,
-    "versionName": "2.1.8",
-    "apk": "hongguo-2.1.8.apk",
-    "notes": "回退了上一版中的播放调整，恢复更稳妥的播放策略。",
-    "sha256": "a5326a75d6b0f7aeea93d1f9d5d5c6c5bba35de5e2e8611249680a6d0cd73f6d",
-    "apk64": "hongguo-2.1.8-arm64.apk",
-    "sha256_64": "ac3f208dc082f9494a8dd766f7735f413a5b9c89af68a04d5b3eb9c4974119af",
-    "mirrors": [],
-    "logApi": "https://www.hongguo.kdns.fr/api/log"
+    "versionCode":  165,
+    "versionName":  "2.2.1",
+    "apk":  "hongguo-2.2.1.apk",
+    "notes":  "修复红果取流被切断（接口迁移）+ 连播卡死自愈 + 新增刷短剧",
+    "sha256":  "c8bb1164f3c4e281fe216bc0f4106216ee52390722ca946b8c2b34b4e49fccfe",
+    "apk64":  "hongguo-2.2.1-arm64.apk",
+    "sha256_64":  "1a9b8efc8350cf6a8df3aafc8e6f2642843c1a706357023807f5ba7581d04fc4",
+    "mirrors":  [
+
+                ],
+    "logApi":  "https://www.hongguo.kdns.fr/api/log"
 }
