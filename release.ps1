@@ -54,7 +54,8 @@ foreach ($target in @('32', '64')) {
     Write-Host "构建中（abiTarget=$target）..." -ForegroundColor Cyan
     Push-Location $AppDir
     try {
-        & .\gradlew.bat :app:assembleDebug "-PabiTarget=$target"
+        # PS5 下 gradle 的 stderr 警告会触发 NativeCommandError 中断，重定向吞掉
+        & .\gradlew.bat :app:assembleDebug "-PabiTarget=$target" 2>&1 | Out-Null
         if ($LASTEXITCODE -ne 0) { throw "构建失败（abiTarget=$target, exit $LASTEXITCODE）" }
     } finally {
         Pop-Location
