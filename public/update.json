@@ -1,11 +1,11 @@
 {
-    "versionCode":  168,
-    "versionName":  "2.2.4",
-    "apk":  "hongguo-2.2.4.apk",
-    "notes":  "取流改走 model-direct 路由（/novel/player/video_model/v1/），修复全设备 200 空响应；query 档案改真实机型+cdid",
-    "sha256":  "70608673389cc2a91ea1e41e20b83b65c4691e30f788ae6afd7bd82b53b08e12",
-    "apk64":  "hongguo-2.2.4-arm64.apk",
-    "sha256_64":  "4fa9514bf1b79c77d1431c8e4f563f876857f9133c0186ebcd3bb071bfd000f0",
+    "versionCode":  169,
+    "versionName":  "2.2.5",
+    "apk":  "hongguo-2.2.5.apk",
+    "notes":  "修复播放卡顿：修掉误判『画面卡住，重新连接』的看门狗误报；播放更流畅",
+    "sha256":  "9d83d464d4efff111a58f90ecc0780eddfd1b75ce6a9137454bd79666b795fcd",
+    "apk64":  "hongguo-2.2.5-arm64.apk",
+    "sha256_64":  "311b1352a34af3e52ca8ee46e8140990109f26bd0684578bfb9513b9d07b1680",
     "mirrors":  [
 
                 ],
