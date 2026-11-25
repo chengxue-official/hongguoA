@@ -1,11 +1,11 @@
 {
-    "versionCode":  169,
-    "versionName":  "2.2.5",
-    "apk":  "hongguo-2.2.5.apk",
-    "notes":  "修复播放卡顿：修掉误判『画面卡住，重新连接』的看门狗误报；播放更流畅",
-    "sha256":  "9d83d464d4efff111a58f90ecc0780eddfd1b75ce6a9137454bd79666b795fcd",
-    "apk64":  "hongguo-2.2.5-arm64.apk",
-    "sha256_64":  "311b1352a34af3e52ca8ee46e8140990109f26bd0684578bfb9513b9d07b1680",
+    "versionCode":  170,
+    "versionName":  "2.2.6",
+    "apk":  "hongguo-2.2.6.apk",
+    "notes":  "刷短剧：上下键/上下滑直接换剧；播放菜单新增收藏此剧、剧集详情；修复播放中误报「画面卡住，重新连接」",
+    "sha256":  "8daf2f942f50cb88b19444c88a6a88b72fb3e5e82da9ee913c59474f17324243",
+    "apk64":  "hongguo-2.2.6-arm64.apk",
+    "sha256_64":  "e7269655cefaad81e043742ef70c67486d8bf01be4b614efe07265809c26dbf9",
     "mirrors":  [
 
                 ],
