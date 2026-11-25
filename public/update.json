@@ -1,13 +1,11 @@
 {
-    "versionCode":  170,
-    "versionName":  "2.2.6",
-    "apk":  "hongguo-2.2.6.apk",
-    "notes":  "刷短剧：上下键/上下滑直接换剧；播放菜单新增收藏此剧、剧集详情；修复播放中误报「画面卡住，重新连接」",
-    "sha256":  "8daf2f942f50cb88b19444c88a6a88b72fb3e5e82da9ee913c59474f17324243",
-    "apk64":  "hongguo-2.2.6-arm64.apk",
-    "sha256_64":  "e7269655cefaad81e043742ef70c67486d8bf01be4b614efe07265809c26dbf9",
-    "mirrors":  [
-
-                ],
-    "logApi":  "https://www.hongguo.kdns.fr/api/log"
+    "versionCode": 171,
+    "versionName": "2.2.7",
+    "apk": "hongguo-2.2.7.apk",
+    "notes": "修复播放中卡顿之后音画不同步：卡顿超过 1 秒会自动把画面拉回声音位置，且不再降低清晰度。",
+    "sha256": "93748b60ed0d16045010bf9470516436cd1ea9688bd237c93ce98bf49bb2f5d5",
+    "apk64": "hongguo-2.2.7-arm64.apk",
+    "sha256_64": "9e98b066df3ec6de71f62a9c06fd9c9b8ed2a8bb6c32b8d81fae9b06feeda667",
+    "mirrors": [],
+    "logApi": "https://www.hongguo.kdns.fr/api/log"
 }
