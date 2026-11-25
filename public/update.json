@@ -1,11 +1,11 @@
 {
-    "versionCode":  166,
-    "versionName":  "2.2.2",
-    "apk":  "hongguo-2.2.2.apk",
-    "notes":  "取流对齐HGTV 1.3.9.3：preload端点+完整签名头+本机注册机型档案，修复播放恒空响应",
-    "sha256":  "066b7b68cab4854f6dc36ccd3ff207eb4bda831860ce7dfe5135d08d52017ab6",
-    "apk64":  "hongguo-2.2.2-arm64.apk",
-    "sha256_64":  "8c6213f67cc9f8b95efa1718e511574a8c3c7265cc3002ddc135514ac7f9264c",
+    "versionCode":  168,
+    "versionName":  "2.2.4",
+    "apk":  "hongguo-2.2.4.apk",
+    "notes":  "取流改走 model-direct 路由（/novel/player/video_model/v1/），修复全设备 200 空响应；query 档案改真实机型+cdid",
+    "sha256":  "70608673389cc2a91ea1e41e20b83b65c4691e30f788ae6afd7bd82b53b08e12",
+    "apk64":  "hongguo-2.2.4-arm64.apk",
+    "sha256_64":  "4fa9514bf1b79c77d1431c8e4f563f876857f9133c0186ebcd3bb071bfd000f0",
     "mirrors":  [
 
                 ],
