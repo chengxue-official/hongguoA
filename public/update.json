@@ -1,11 +1,11 @@
 {
-    "versionCode":  165,
-    "versionName":  "2.2.1",
-    "apk":  "hongguo-2.2.1.apk",
-    "notes":  "修复红果取流被切断（接口迁移）+ 连播卡死自愈 + 新增刷短剧",
-    "sha256":  "c8bb1164f3c4e281fe216bc0f4106216ee52390722ca946b8c2b34b4e49fccfe",
-    "apk64":  "hongguo-2.2.1-arm64.apk",
-    "sha256_64":  "1a9b8efc8350cf6a8df3aafc8e6f2642843c1a706357023807f5ba7581d04fc4",
+    "versionCode":  166,
+    "versionName":  "2.2.2",
+    "apk":  "hongguo-2.2.2.apk",
+    "notes":  "取流对齐HGTV 1.3.9.3：preload端点+完整签名头+本机注册机型档案，修复播放恒空响应",
+    "sha256":  "066b7b68cab4854f6dc36ccd3ff207eb4bda831860ce7dfe5135d08d52017ab6",
+    "apk64":  "hongguo-2.2.2-arm64.apk",
+    "sha256_64":  "8c6213f67cc9f8b95efa1718e511574a8c3c7265cc3002ddc135514ac7f9264c",
     "mirrors":  [
 
                 ],
