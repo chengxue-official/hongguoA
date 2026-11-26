@@ -1,6 +1,6 @@
 {
   "_comment": "接口配置（测试版）。接口炸了只改这里，不动代码。数据来源：官方 7.4.5.32 静态+运行时提取。",
-  "version": 4,
+  "version": 5,
   "generated_from": "novelread 7.4.5.32 (74532)",
   "hosts": {
     "api_primary": [
@@ -16,6 +16,9 @@
       "lf3-reading.fqnovelpic.com",
       "p3-reading.byteimg.com",
       "p6-novel.byteimg.com"
+    ],
+    "settings": [
+      "is.snssdk.com"
     ]
   },
   "endpoints": {
@@ -50,7 +53,7 @@
       "method": "POST"
     },
     "settings": {
-      "host": "api_primary",
+      "host": "settings",
       "path": "/service/settings/v3/",
       "method": "GET"
     }
