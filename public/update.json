@@ -1,11 +1,11 @@
 {
-    "versionCode": 172,
-    "versionName": "2.2.8",
-    "apk": "hongguo-2.2.8.apk",
-    "notes": "接口配置化：新增 endpoints.json 热更新（多源兜底），接口变更无需发版；新增「接口自检」页（设置-系统）；关闭画面停滞自救，播放行为回到 2.1.6",
-    "sha256": "4bded082e048998ed49c4230b180e6aae372741c926ad8ed3bdab68f2c9a086f",
-    "apk64": "hongguo-2.2.8-arm64.apk",
-    "sha256_64": "9da056d92a878263d2d04e7ac8de45e297ddffa973bcfafff2e42ef52e1b8f83",
+    "versionCode": 173,
+    "versionName": "2.2.9",
+    "apk": "hongguo-2.2.9.apk",
+    "notes": "修复「接口自检」入口点击无响应（监听被误注册在“清空搜索”的确认回调里，只有先清空过搜索才生效）；其余沿用 2.2.8：接口配置热更新、多源兜底、停滞自救关闭回到 2.1.6 播放行为。",
+    "sha256": "34aca0aaef5ea02eec8c0cc5903a6ad72263f4bed85b667232ed682817e550fe",
+    "apk64": "hongguo-2.2.9-arm64.apk",
+    "sha256_64": "dcca12c15f5e74d4256e0e1e743baf7674ee384649a55ea7fa54beecccd70739",
     "mirrors": [],
     "logApi": "https://www.hongguo.kdns.fr/api/log"
 }
