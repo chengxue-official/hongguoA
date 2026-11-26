@@ -1,11 +1,11 @@
 {
-    "versionCode": 171,
-    "versionName": "2.2.7",
-    "apk": "hongguo-2.2.7.apk",
-    "notes": "修复播放中卡顿之后音画不同步：卡顿超过 1 秒会自动把画面拉回声音位置，且不再降低清晰度。",
-    "sha256": "93748b60ed0d16045010bf9470516436cd1ea9688bd237c93ce98bf49bb2f5d5",
-    "apk64": "hongguo-2.2.7-arm64.apk",
-    "sha256_64": "9e98b066df3ec6de71f62a9c06fd9c9b8ed2a8bb6c32b8d81fae9b06feeda667",
+    "versionCode": 172,
+    "versionName": "2.2.8",
+    "apk": "hongguo-2.2.8.apk",
+    "notes": "接口配置化：新增 endpoints.json 热更新（多源兜底），接口变更无需发版；新增「接口自检」页（设置-系统）；关闭画面停滞自救，播放行为回到 2.1.6",
+    "sha256": "4bded082e048998ed49c4230b180e6aae372741c926ad8ed3bdab68f2c9a086f",
+    "apk64": "hongguo-2.2.8-arm64.apk",
+    "sha256_64": "9da056d92a878263d2d04e7ac8de45e297ddffa973bcfafff2e42ef52e1b8f83",
     "mirrors": [],
     "logApi": "https://www.hongguo.kdns.fr/api/log"
 }
