@@ -1,11 +1,11 @@
 {
-    "versionCode":  176,
-    "versionName":  "2.2.11",
-    "apk":  "hongguo-2.2.11.apk",
-    "notes":  "更新下载改为断点续传（慢网/大包不再失败）；新增 Gitee 镜像源（国内下载快百倍）",
-    "sha256":  "58c5cf14c7e1fc67b684e4196bec215457b8ba57f84d5bbe65c885d7cdfd3329",
-    "apk64":  "hongguo-2.2.11-arm64.apk",
-    "sha256_64":  "ef5400ba5b5776e85e256ca63a7f5000bb94d511b7e3efe505064328b87cea91",
+    "versionCode":  177,
+    "versionName":  "2.2.12",
+    "apk":  "hongguo-2.2.12.apk",
+    "notes":  "更新包优先从 Gitee 镜像下载（实测 1.1MB/s，比原源快 35 倍）+ 断点续传",
+    "sha256":  "cfb3a165125b3ea530b873c0cf1e967e48d13e0f4e65a29c9ef1c403595215f5",
+    "apk64":  "hongguo-2.2.12-arm64.apk",
+    "sha256_64":  "ea1fdc55d1d52f39a1daad8b8cf4c346972ccff7cbbf731cbe8801972f177b27",
     "mirrors":  [
                     "https://gitee.com/cheng-xue-official/gengxin/raw/master/update.json"
                 ],
