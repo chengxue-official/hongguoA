@@ -1,11 +1,11 @@
 {
-    "versionCode": 173,
-    "versionName": "2.2.9",
-    "apk": "hongguo-2.2.9.apk",
-    "notes": "修复「接口自检」入口点击无响应（监听被误注册在“清空搜索”的确认回调里，只有先清空过搜索才生效）；其余沿用 2.2.8：接口配置热更新、多源兜底、停滞自救关闭回到 2.1.6 播放行为。",
-    "sha256": "34aca0aaef5ea02eec8c0cc5903a6ad72263f4bed85b667232ed682817e550fe",
-    "apk64": "hongguo-2.2.9-arm64.apk",
-    "sha256_64": "dcca12c15f5e74d4256e0e1e743baf7674ee384649a55ea7fa54beecccd70739",
+    "versionCode": 175,
+    "versionName": "2.2.10",
+    "apk": "hongguo-2.2.10.apk",
+    "notes": "修复部分设备（设备型号含中文的投影仪、电视盒子）无法播放的问题。",
+    "sha256": "4eecc884baef00b590e5c8212f2b909c4b546648e6fcf2eaa5561d2a6ccade48",
+    "apk64": "hongguo-2.2.10-arm64.apk",
+    "sha256_64": "41a9a4d9329d6589228556593295d12c54eb832cba3b07b94706cb9f8ca997ae",
     "mirrors": [],
     "logApi": "https://www.hongguo.kdns.fr/api/log"
 }
