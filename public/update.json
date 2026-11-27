@@ -1,11 +1,13 @@
 {
-    "versionCode": 175,
-    "versionName": "2.2.10",
-    "apk": "hongguo-2.2.10.apk",
-    "notes": "修复部分设备（设备型号含中文的投影仪、电视盒子）无法播放的问题。",
-    "sha256": "4eecc884baef00b590e5c8212f2b909c4b546648e6fcf2eaa5561d2a6ccade48",
-    "apk64": "hongguo-2.2.10-arm64.apk",
-    "sha256_64": "41a9a4d9329d6589228556593295d12c54eb832cba3b07b94706cb9f8ca997ae",
-    "mirrors": [],
-    "logApi": "https://www.hongguo.kdns.fr/api/log"
+    "versionCode":  176,
+    "versionName":  "2.2.11",
+    "apk":  "hongguo-2.2.11.apk",
+    "notes":  "更新下载改为断点续传（慢网/大包不再失败）；新增 Gitee 镜像源（国内下载快百倍）",
+    "sha256":  "58c5cf14c7e1fc67b684e4196bec215457b8ba57f84d5bbe65c885d7cdfd3329",
+    "apk64":  "hongguo-2.2.11-arm64.apk",
+    "sha256_64":  "ef5400ba5b5776e85e256ca63a7f5000bb94d511b7e3efe505064328b87cea91",
+    "mirrors":  [
+                    "https://gitee.com/cheng-xue-official/gengxin/raw/master/update.json"
+                ],
+    "logApi":  "https://www.hongguo.kdns.fr/api/log"
 }
