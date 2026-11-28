@@ -1,11 +1,11 @@
 {
-    "versionCode": 179,
-    "versionName": "2.3.0",
-    "apk": "hongguo-2.3.0.apk",
-    "notes": "新增刷短剧偏好（类型过滤/口味记忆/少看过的少推）、首播更快（先用低档起播再自动升高清）、下载与解密提速；修复部分设备无法播放的问题。",
-    "sha256": "47e6fd02ee6656f29e6616d3bbfc79b584f050c23014501d9bf6bd90813297d6",
-    "apk64": "hongguo-2.3.0-arm64.apk",
-    "sha256_64": "4ffdbe68018de72e53dc2c49c3ce7e12d87903ec437108787be6ad98b2d6643b",
+    "versionCode": 182,
+    "versionName": "2.3.3",
+    "apk": "hongguo-2.3.3.apk",
+    "notes": "回退到 2.3.0 的稳定版本（修复 2.3.2 的闪退问题）。",
+    "sha256": "84a05c354082991ff70454c792210c604226da27d271c1e75b0f3b8920c6e1ad",
+    "apk64": "hongguo-2.3.3-arm64.apk",
+    "sha256_64": "2ef57384bb7f894171ed8d7b3680380b0cad61bddd064559f83c036c2fa9d7dd",
     "mirrors": [
         "https://gitee.com/cheng-xue-official/gengxin/raw/master/update.json"
     ],
